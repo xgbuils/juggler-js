@@ -38,28 +38,44 @@
 
     </div>
     <!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
-    <script src="extend.js"></script>
-    <script src="kinetic.js"></script>
+    
+    <script src="src/Canvas/Layer.js"></script>
+    <script src="src/Canvas/Shape/Circle.js"></script>
+    <script src="src/Animation/Animation.js"></script>
+    <script src="src/extend.js"></script>
+    <!--<script src="kinetic.js"></script>-->
     <script src="src/juggler.js"></script>
     <script>
+/*
+      var circle = new Circle({
+        x: 100,
+        y: 50,
+        radius: 20,
+        fill: 'red'
+      })
+
+      layer.add(circle)
+
+      layer.draw()*/
+
       var input_pattern = document.getElementById('pattern')
       var select_pattern = document.getElementById('select')
       var input_button = document.getElementById('button')
 
-      var stage = new Kinetic.Stage({
+      var layer = new Layer({
         container: 'container',
         width: 500,
         height: 650
       })
 
       var juggler = new Juggler({
-          stage: stage,
+          stage: layer,
       })
 
       juggler.setPattern('531')
 
-      juggler.start()
-
+      juggler.play()
+/*
       select_pattern.onchange = function () {
           input_pattern.value = select_pattern.value
       }
@@ -68,8 +84,8 @@
           var pattern = input_pattern.value
           juggler.removePattern()
           juggler.setPattern(pattern)
-          juggler.start()
-      }
+          juggler.play()
+      }*/
 
     </script>
   </body>

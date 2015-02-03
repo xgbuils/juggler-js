@@ -44,12 +44,12 @@ var Juggler = (function () {
                 radius: 10,
                 colors: ['red', 'blue', 'green', 'yellow', 'black', 'orange', 'purple']
             },
-            height: 0.8 * attrs.stage.attrs.height,
+            height: 0.8 * attrs.stage/*.attrs*/.height,
             center: {
-                x: 0.5 * attrs.stage.attrs.width,
-                y: 0.9 * attrs.stage.attrs.height,
+                x: 0.5 * attrs.stage/*.attrs*/.width,
+                y: 0.9 * attrs.stage/*.attrs*/.height,
             },
-            layer: new Kinetic.Layer()
+            layer: attrs.stage
         }, attrs)
 
         var target = recalculate(this.attrs, this.attrs.integer_height)
@@ -147,7 +147,7 @@ var Juggler = (function () {
                     begin[j + numbers[jmod].value] = i
                     ++i
                     var ball = {
-                        figure: new Kinetic.Circle({
+                        figure: new Circle({
                             x: j % 2 === 0 ? left + 15 : right -15,
                             y: y0,
                             radius: radius || 10,
@@ -173,9 +173,13 @@ var Juggler = (function () {
 
         var self = this
 
-        attrs.stage.add(attrs.layer)          
-        attrs.animation = new Kinetic.Animation(function(frame) {
+        console.log(attrs.layer.shapes.length)
+
+        //attrs.stage.add(attrs.layer)          
+        attrs.animation = new Animation(function(frame) {
             var steps = Math.floor(frame.time / attrs.interval)
+            //console.log(frame.time, steps)
+            //console.log(attrs.layer.shapes.length)
             self.balls.forEach(function (ball) {
                 var t = frame.time - attrs.interval * ball.start
                 if (t >= 0) {
@@ -194,34 +198,38 @@ var Juggler = (function () {
                         i = numbers[i].next
                     }
                     var step = steps - Math.floor(t / attrs.interval)
+                    
                     //console.log('fin: ', step, pattern, t)
+                    
                     if (t < numbers[i].period) {
                         // a l'aire
                         if (numbers[i].value % 2 != 0) {
                             if (step % 2 === 0) {
-                                ball.figure.setX( left + shift + width * t / numbers[i].period)
+                                ball.figure.setX(left  + shift + width * t / numbers[i].period)
                             } else {
                                 ball.figure.setX(right - shift - width * t / numbers[i].period)
                             }
                         } else {
                             if (step % 2 === 0) {
-                                ball.figure.setX( left + shift - 2*shift * t / numbers[i].period)
+                                ball.figure.setX(left  + shift - 2 * shift * t / numbers[i].period)
                             } else {
-                                ball.figure.setX(right - shift + 2*shift * t / numbers[i].period)
+                                ball.figure.setX(right - shift + 2 * shift * t / numbers[i].period)
                             }
                         }
                         ball.figure.setY(y0 - numbers[i].velocity * t + 0.5 * gravity * t * t)
                     } else {
                         // a la mà
+                        
                         if ((step + numbers[i].value) % 2 === 0) {
-                            ball.figure.setX( left - shift + 2*shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
+                            ball.figure.setX(left  - shift + 2 * shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
                         } else {
-                            ball.figure.setX(right + shift - 2*shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
+                            ball.figure.setX(right + shift - 2 * shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
                         }
                         ball.figure.setY(y0)
                     }
                 }
             })
+            attrs.layer.draw()
         }, attrs.layer);
     }
 
@@ -233,8 +241,8 @@ var Juggler = (function () {
         self.attrs.layer = new Kinetic.Layer()
     }
 
-    Juggler.prototype.start = function () {
-        this.attrs.animation.start()
+    Juggler.prototype.play = function () {
+        this.attrs.animation.play()
     }
 
     return Juggler

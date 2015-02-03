@@ -3,6 +3,7 @@ function Circle(options) {
 }
 
 Circle.prototype.draw = function () {
+	//console.log('draw circle')
 	var shape = this.shape
 	var layer = this.layer
 	layer.ctx.beginPath()

@@ -27,3 +27,11 @@ Layer.prototype.draw = function (shape) {
 Layer.prototype.clear = function (shape) {
 	this.ctx.clearRect(0,0,this.width, this.height)
 }
+
+Layer.prototype.remove = function (shape) {
+	this.clear()
+	this.shapes.forEach(function (shape) {
+		delete shape.layer
+	})
+	this.shapes = []
+}

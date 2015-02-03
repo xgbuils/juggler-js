@@ -7,7 +7,6 @@ var Animation = function (func) {
 }
 Animation.prototype = {
     play: function () {
-        //console.log('play')
         if (this.func && !this.on) {
             this.played += (Date.now() - this.paused)
             loop.call(this)
@@ -17,7 +16,6 @@ Animation.prototype = {
     pause: function () {
         if (this.func && this.on) {
             cancelAnimationFrame(this.id)
-            //console.log('cancel')
             this.active = this.on = false
             this.paused = Date.now()
         }        

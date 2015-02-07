@@ -495,8 +495,8 @@ var Juggler = (function () {
 module.exports = Juggler
 },{"./Animation/Animation.js":1,"./Canvas/Shape/Circle.js":4,"./extend.js":5}],7:[function(require,module,exports){
 var Juggler = require('./juggler.js')
-var Layer = require('./Canvas/Layer.js')
-var extend = require('./extend.js')
+var Layer   = require('./Canvas/Layer.js')
+var extend  = require('./extend.js')
 /*
       var circle = new Circle({
         x: 100,

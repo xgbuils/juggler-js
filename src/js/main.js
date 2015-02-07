@@ -1,6 +1,6 @@
 var Juggler = require('./juggler.js')
-var Layer = require('./Canvas/Layer.js')
-var extend = require('./extend.js')
+var Layer   = require('./Canvas/Layer.js')
+var extend  = require('./extend.js')
 /*
       var circle = new Circle({
         x: 100,

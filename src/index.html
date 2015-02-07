@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <title>juggler simulator</title>
   </head>
   <body>
@@ -40,61 +40,18 @@
     </div>
     <!--<script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>-->
     
+    <!--<script src="src/Canvas/Layer.js"></script>
     <script src="src/Canvas/Layer.js"></script>
-    <script src="src/Canvas/Layer.js"></script>
-    <script src="src/Canvas/Shape/Circle.js"></script>
-    <script>
+    <script src="src/Canvas/Shape/Circle.js"></script>-->
+    <!--<script>
       window.requestAnimationFrame = undefined
       console.log(window.requestAnimationFrame)
-    </script>
-    <script src="src/Animation/rAF.js"></script>
+    </script>-->
+<!--    <script src="src/Animation/rAF.js"></script>
     <script src="src/Animation/Animation.js"></script>
     <script src="src/extend.js"></script>
-    <!--<script src="kinetic.js"></script>-->
-    <script src="src/juggler.js"></script>
-    <script>
-/*
-      var circle = new Circle({
-        x: 100,
-        y: 50,
-        radius: 20,
-        fill: 'red'
-      })
-
-      layer.add(circle)
-
-      layer.draw()*/
-
-      var input_pattern = document.getElementById('pattern')
-      var select_pattern = document.getElementById('select')
-      var input_button = document.getElementById('button')
-
-      var layer = new Layer({
-        container: 'container',
-        width: 500,
-        height: 650
-      })
-
-      var juggler = new Juggler({
-          stage: layer,
-      })
-
-      juggler.setPattern('531')
-      console.log('eoo', extend(true, {}, juggler.balls[0].figure.shape))
-      juggler.play()
-
-      select_pattern.onchange = function () {
-          input_pattern.value = select_pattern.value
-      }
-      input_button.onclick = function () {
-          console.log('eeeo')
-          var pattern = input_pattern.value
-          juggler.removePattern()
-          juggler.setPattern(pattern)
-          juggler.play()
-      }
-
-    </script>
+    <script src="src/juggler.js"></script>-->
+    <script src="js/main.js"></script>
 
   </body>
 </html>      

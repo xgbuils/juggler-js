@@ -35,3 +35,5 @@ Layer.prototype.remove = function (shape) {
 	})
 	this.shapes = []
 }
+
+module.exports = Layer

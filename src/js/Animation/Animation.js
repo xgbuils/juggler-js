@@ -1,3 +1,5 @@
+require('./rAF.js')
+
 var Animation = function (func) {
     this.func   = func
     this.on     = false
@@ -58,12 +60,12 @@ Animation.prototype = {
         }
     },
 }
-
 function loop () {
     var now = Date.now()
     var frame = {
         time: (now - this.played) * this.v
     }
     this.func(frame)
-    this.id = requestAnimationFrame(loop.bind(this))
+    this.id = window.requestAnimationFrame(loop.bind(this))
 }
+module.exports = Animation

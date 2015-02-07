@@ -78,3 +78,5 @@ function extend() {
 	// Return the modified object
 	return target;
 };
+
+module.exports = extend

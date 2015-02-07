@@ -1,3 +1,7 @@
+var Animation = require('./Animation/Animation.js')
+var Circle = require('./Canvas/Shape/Circle.js')
+var extend = require('./extend.js')
+
 var Juggler = (function () {
 
     var abc = "abcdefghijklmnopqrstuvwxyz"
@@ -232,3 +236,5 @@ var Juggler = (function () {
 
     return Juggler
 })()
+
+module.exports = Juggler

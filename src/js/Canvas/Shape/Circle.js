@@ -22,3 +22,5 @@ Circle.prototype.setX = function (x) {
 Circle.prototype.setY = function (y) {
 	this.shape.y = y
 }
+
+module.exports = Circle

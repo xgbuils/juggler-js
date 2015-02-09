@@ -97,20 +97,16 @@ var Juggler = (function () {
 
         if (maximum > juggling.integer_height) {
             var target = recalculate(attrs, maximum)
-            //console.log(target)
-            console.log('jhgsdfjkasg')
             width   = target.width
             gravity = target.gravity
             shift   = target.shift
             radius  = target.radius
         } else {
-            console.log('eeeeee', juggling.width)
             shift   = juggling.waiting.shift
             width   = juggling.width
             gravity = juggling.gravity
             radius  = juggling.balls.radius
         }
-        console.log('width:', width)
 
         //console.log(width, gravity, radius, shift)
         var num_balls = pattern.reduce(function (a, b) {
@@ -212,32 +208,55 @@ var Juggler = (function () {
                         i = numbers[i].next
                     }
                     var step = steps - Math.floor(t / juggling.interval)
-                    
-                    if (t < numbers[i].period) {
-                        // a l'aire
-                        if (numbers[i].value % 2 != 0) {
-                            if (step % 2 === 0) {
-                                ball.figure.setX(left  + shift + width * t / numbers[i].period)
-                            } else {
-                                ball.figure.setX(right - shift - width * t / numbers[i].period)
-                            }
-                        } else {
-                            if (step % 2 === 0) {
-                                ball.figure.setX(left  + shift - 2 * shift * t / numbers[i].period)
-                            } else {
-                                ball.figure.setX(right - shift + 2 * shift * t / numbers[i].period)
-                            }
+
+                    var position = {}
+
+                    if (step % 2 === 0) {
+                        position.start = {
+                            x: left + shift,
+                            y: y0
                         }
-                        ball.figure.setY(y0 - numbers[i].velocity * t + 0.5 * gravity * t * t)
                     } else {
-                        // a la mà
-                        if ((step + numbers[i].value) % 2 === 0) {
-                            ball.figure.setX(left  - shift + 2 * shift * (t - numbers[i].period)/ (juggling.waiting.time * juggling.interval))
-                        } else {
-                            ball.figure.setX(right + shift - 2 * shift * (t - numbers[i].period)/ (juggling.waiting.time * juggling.interval))
+                        position.start = {
+                            x: right - shift,
+                            y: y0
                         }
-                        ball.figure.setY(y0)
                     }
+
+                    if ((step + numbers[i].value) % 2 === 0) {
+                        position.middle = {
+                            x: left - shift,
+                            y: y0
+                        }
+                        position.end = {
+                            x: left + shift,
+                            y: y0
+                        }
+                    } else {
+                        position.middle = {
+                            x: right + shift,
+                            y: y0
+                        }
+                        position.end = {
+                            x: right - shift,
+                            y: y0
+                        }
+                    }
+
+                    var f = {
+                        value: numbers[i].value,
+                        time: {
+                            total: juggling.interval,
+                            thrown: numbers[i].period,
+                            caught: juggling.interval * numbers[i].value - numbers[i].period,
+                            now: t
+                        },
+                        left: step % 2 === 0,
+                        gravity: gravity,
+                        position: position
+                    }
+
+                    behaviour(ball.figure, f)
                 }
             })
             attrs.layer.draw()
@@ -257,5 +276,24 @@ var Juggler = (function () {
 
     return Juggler
 })()
+
+function behaviour(figure, frame) {
+    var time = frame.time
+    var position = frame.position
+    var width
+    var now = time.now
+    if (now < time.thrown) {
+        // thrown
+        width = position.middle.x - position.start.x
+        figure.setX(position.start.x + width * now / time.thrown)
+        var velocity = 0.5 * frame.gravity * time.thrown
+        figure.setY(position.start.y - velocity * now + 0.5 * frame.gravity * now * now)
+    } else {
+        // caught
+        width = position.end.x - position.middle.x
+        figure.setX(position.middle.x + width * (now - time.thrown) / time.caught)
+        figure.setY(position.middle.y)
+    }
+}
 
 module.exports = Juggler

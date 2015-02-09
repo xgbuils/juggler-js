@@ -41,7 +41,7 @@ module.exports = function(grunt) {
       },
       'scripts-prod': {
         files: ['src/**/*.js'],
-        tasks: ['browserify:prod']
+        tasks: ['browserify:prod', 'uglify:prod']
       },
       'css-dev': {
         files: ['src/styles.css'],

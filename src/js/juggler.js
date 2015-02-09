@@ -1,6 +1,8 @@
 var Animation = require('./Animation/Animation.js')
 var Circle = require('./Canvas/Shape/Circle.js')
 var extend = require('./extend.js')
+var Layer = require('./Canvas/Layer.js')
+var Stage = require('./Canvas/Stage.js')
 
 var Juggler = (function () {
 
@@ -14,52 +16,65 @@ var Juggler = (function () {
     }
 
     function recalculate (attrs, maximum) {
-        var K = (maximum - attrs.waiting.time) * attrs.interval 
+        var juggling = attrs.juggling
+        var stage    = attrs.stage
+        var K = (maximum - juggling.waiting.time) * juggling.interval 
         var width
 
-        if (attrs.width) {
-            var k = (attrs.integer_height - attrs.waiting.time) * attrs.interval
-            var r = (k*k) / (K*K)
-            width = r * attrs.width
+        if (stage.width) {
+            var k = (juggling.integer_height - juggling.waiting.time) * juggling.interval
+            var r = k / K //(k * k) / (K * K)
+            width = r * stage.width
+            console.log('uu', r)
         } else {
-            var k = (3 - attrs.waiting.time) * attrs.interval
-            var r = (k*k) / (K*K)
-            width = 1.5 * attrs.height * r
+            var k = (3 - juggling.waiting.time) * juggling.interval
+            var r = k / K // (k * k) / (K * K)
+            width = 1.5 * juggling.height * r
         }
 
         return {
-            width: width,
-            gravity: 8 * attrs.height / (K * K),
-            shift: attrs.waiting.shift * r,
-            radius: attrs.balls.radius * r
+            width: 0.5 * width,
+            gravity: 8 * juggling.height / (K * K),
+            shift: juggling.waiting.shift * r,
+            radius: juggling.balls.radius * r
         }
     }
 
     function Juggler(attrs) {
+        console.log(attrs.stage)
         this.attrs = {}
         this.attrs = extend(true, this.attrs, {
-            interval: 500,
-            waiting: {
-              time: 0.5,
-              shift: 50,
+            stage: {
+                width:  500,
+                height: 650
             },
-            integer_height: 5,
-            balls: {
-                radius: 10,
-                colors: ['red', 'blue', 'green', 'yellow', 'black', 'orange', 'purple']
+            juggling: {
+                interval: 500,
+                waiting: {
+                  time: 0.5,
+                  shift: 50,
+                },
+                integer_height: 5,
+                balls: {
+                    radius: 10,
+                    colors: ['red', 'blue', 'green', 'yellow', 'black', 'orange', 'purple']
+                },
+                height: 0.8 * attrs.stage.height,
+                center: {
+                    x: 0.5 * attrs.stage.width,
+                    y: 0.9 * attrs.stage.height
+                }
             },
-            height: 0.8 * attrs.stage/*.attrs*/.height,
-            center: {
-                x: 0.5 * attrs.stage/*.attrs*/.width,
-                y: 0.9 * attrs.stage/*.attrs*/.height,
-            },
-            layer: attrs.stage
+            layer: new Layer()
         }, attrs)
+        this.attrs.stage = new Stage(this.attrs.stage)
+        this.attrs.stage.add(this.attrs.layer)
 
-        var target = recalculate(this.attrs, this.attrs.integer_height)
-        //console.log(target)
-        this.attrs.width   = target.width
-        this.attrs.gravity = target.gravity
+        var juggling = this.attrs.juggling
+        var target = recalculate(this.attrs, this.attrs.juggling.integer_height)
+
+        juggling.width   = target.width
+        juggling.gravity = target.gravity
     }
 
     Juggler.toPattern = function (string) {
@@ -74,23 +89,28 @@ var Juggler = (function () {
         }
 
         var attrs = this.attrs
+        var stage    = attrs.stage
+        var juggling = attrs.juggling
 
         var radius, shift, gravity, width
         var maximum = Math.max.apply(null, pattern)
 
-        if (maximum > attrs.integer_height) {
+        if (maximum > juggling.integer_height) {
             var target = recalculate(attrs, maximum)
             //console.log(target)
+            console.log('jhgsdfjkasg')
             width   = target.width
             gravity = target.gravity
             shift   = target.shift
             radius  = target.radius
         } else {
-            shift   = attrs.waiting.shift
-            width   = attrs.width
-            gravity = attrs.gravity
-            radius  = attrs.balls.radius
+            console.log('eeeeee', juggling.width)
+            shift   = juggling.waiting.shift
+            width   = juggling.width
+            gravity = juggling.gravity
+            radius  = juggling.balls.radius
         }
+        console.log('width:', width)
 
         //console.log(width, gravity, radius, shift)
         var num_balls = pattern.reduce(function (a, b) {
@@ -109,7 +129,7 @@ var Juggler = (function () {
             var number = {}
             number.value  = pattern[i]
             number.next   = (i + number.value) % pattern.length
-            number.period = (number.value - attrs.waiting.time) * attrs.interval 
+            number.period = (number.value - juggling.waiting.time) * juggling.interval 
             number.velocity = 0.5 * gravity * number.period
             numbers.push(number)
         }
@@ -130,10 +150,10 @@ var Juggler = (function () {
             }
         }
 
-        var y0 = attrs.center.y
+        var y0 = juggling.center.y
         shift /= 2
-        var left  = attrs.center.x - (width / 2)
-        var right = attrs.center.x + (width / 2)
+        var left  = juggling.center.x - (width / 2)
+        var right = juggling.center.x + (width / 2)
 
         var j = 0
         var jmod = 0
@@ -153,7 +173,7 @@ var Juggler = (function () {
                             x: j % 2 === 0 ? left + 15 : right -15,
                             y: y0,
                             radius: radius || 10,
-                            fill: attrs.balls.colors[k% attrs.balls.colors.length],
+                            fill: juggling.balls.colors[k% juggling.balls.colors.length],
                         }),
                         start: j,
                         cycle: numbers[jmod].cycle
@@ -173,16 +193,17 @@ var Juggler = (function () {
 
         //attrs.stage.add(attrs.layer)          
         attrs.animation = new Animation(function(frame) {
-            var steps = Math.floor(frame.time / attrs.interval)
+            var steps = Math.floor(frame.time / juggling.interval)
+            //console.log(steps)
             self.balls.forEach(function (ball) {
-                var t = frame.time - attrs.interval * ball.start
+                var t = frame.time - juggling.interval * ball.start
                 if (t >= 0) {
-                    t %= ball.cycle * attrs.interval
+                    t %= ball.cycle * juggling.interval
                     var i = ball.start % numbers.length
                     var pattern
                     while (true) {
                         pattern = numbers[i].value
-                        var time = pattern * attrs.interval
+                        var time = pattern * juggling.interval
                         if (time > t) {
                             break
                         } else {
@@ -190,7 +211,7 @@ var Juggler = (function () {
                         }
                         i = numbers[i].next
                     }
-                    var step = steps - Math.floor(t / attrs.interval)
+                    var step = steps - Math.floor(t / juggling.interval)
                     
                     if (t < numbers[i].period) {
                         // a l'aire
@@ -211,16 +232,16 @@ var Juggler = (function () {
                     } else {
                         // a la mà
                         if ((step + numbers[i].value) % 2 === 0) {
-                            ball.figure.setX(left  - shift + 2 * shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
+                            ball.figure.setX(left  - shift + 2 * shift * (t - numbers[i].period)/ (juggling.waiting.time * juggling.interval))
                         } else {
-                            ball.figure.setX(right + shift - 2 * shift * (t - numbers[i].period)/ (attrs.waiting.time * attrs.interval))
+                            ball.figure.setX(right + shift - 2 * shift * (t - numbers[i].period)/ (juggling.waiting.time * juggling.interval))
                         }
                         ball.figure.setY(y0)
                     }
                 }
             })
             attrs.layer.draw()
-        });
+        })
     }
 
     Juggler.prototype.removePattern = function () {

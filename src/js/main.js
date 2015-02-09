@@ -1,5 +1,5 @@
 var Juggler = require('./juggler.js')
-var Layer   = require('./Canvas/Layer.js')
+var Stage   = require('./Canvas/Stage.js')
 var extend  = require('./extend.js')
 /*
       var circle = new Circle({
@@ -17,14 +17,12 @@ var input_pattern = document.getElementById('pattern')
 var select_pattern = document.getElementById('select')
 var input_button = document.getElementById('button')
 
-var layer = new Layer({
-  container: 'container',
-  width: 500,
-  height: 650
-})
-
 var juggler = new Juggler({
-    stage: layer,
+    stage: {
+        container: 'container',
+        width: 500,
+        height: 650
+    }
 })
 
 juggler.setPattern('531')

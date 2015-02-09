@@ -1,13 +1,9 @@
 function Layer(options) {
 	this.shapes    = []
-	this.container = document.getElementById(options.container)
-	this.container.style.position = 'relative'
 	this.canvas    = document.createElement('canvas')
-	this.canvas.width  = options.width
-	this.canvas.height = options.height
-	this.width  = options.width
-	this.height = options.height
-	this.container.appendChild(this.canvas)
+	this.canvas.style.position = 'absolute'
+	this.canvas.style.top  = '0'
+	this.canvas.style.left = '0'
     this.ctx       = this.canvas.getContext('2d')
 }
 
@@ -23,7 +19,6 @@ LayerProto.draw = function (shape) {
 	this.shapes.forEach(function (shape) {
 		shape.draw()
 	})
-	this.ctx.stroke()
 }
 
 var ua = window.navigator.userAgent

@@ -15,7 +15,11 @@ var extend  = require('./extend.js')
 
 var input_pattern = document.getElementById('pattern')
 var select_pattern = document.getElementById('select')
-var input_button = document.getElementById('button')
+var button = {
+  play:  document.getElementById('play'),
+  stop:  document.getElementById('stop'),
+  speed: document.getElementById('speed')
+}
 
 var juggler = new Juggler({
     stage: {
@@ -31,12 +35,45 @@ juggler.play()
 
 select_pattern.onchange = function () {
     input_pattern.value = select_pattern.value
+    change = true
+    button.play.value = 'play'
+    pause = true
 }
 
-input_button.onclick = function () {
-    console.log('eeeo')
-    var pattern = input_pattern.value
-    juggler.removePattern()
-    juggler.setPattern(pattern)
-    juggler.play()
+
+var change = false
+var pause  = false
+input_pattern.oninput = function () {
+  change = true
+  button.play.value = 'play'
+  pause = true
+}
+
+button.play.onclick = function () {
+    if (change) {
+      var pattern = input_pattern.value
+      juggler.removePattern()
+      juggler.setPattern(pattern)
+    }
+    if (pause) { 
+        juggler.play()
+        this.value = 'pause'
+    } else {
+        juggler.pause()
+        this.value = 'play'
+    }
+    pause = !pause
+    change = false
+}
+
+button.stop.onclick = function () {
+    juggler.stop()
+    button.play.value = 'play'
+    pause = true
+    change = true
+}
+
+button.speed.oninput = function () {
+    var speed = parseFloat(this.value)
+    juggler.speed(speed)
 }

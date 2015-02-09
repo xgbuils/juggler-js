@@ -274,6 +274,19 @@ var Juggler = (function () {
         this.attrs.animation.play()
     }
 
+    Juggler.prototype.pause = function () {
+        this.attrs.animation.pause()
+    }
+
+    Juggler.prototype.stop = function () {
+        this.attrs.animation.stop()
+        this.attrs.layer.remove()
+    }
+
+    Juggler.prototype.speed = function (speed) {
+        this.attrs.animation.speed(speed)
+    }
+
     return Juggler
 })()
 

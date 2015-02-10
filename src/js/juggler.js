@@ -287,6 +287,11 @@ var Juggler = (function () {
         this.attrs.animation.speed(speed)
     }
 
+    Juggler.prototype.colors = function (colors) {
+        this.stop()
+        this.attrs.juggling.balls.colors = [].concat(colors)
+    }
+
     return Juggler
 })()
 
